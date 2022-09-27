@@ -43,12 +43,11 @@ desc forma_pgto;
 
 INSERT INTO forma_pgto(
 	forma_de_pagamento,
-    forma_pgto_idCliente,
     forma_pgto_idCartao)
-	VALUES ('A VISTA', '1', null),
-		   ('PIX', '2', null),
-		   ('CARTÃO DE CRÉDITO', 3, 3),
-		   ('CARTÃO DE DÉBITO', 4, 4);
+	VALUES ('A VISTA', null),
+		   ('PIX', null),
+		   ('CARTÃO DE CRÉDITO', 1),
+		   ('CARTÃO DE DÉBITO', 4);
        
 SELECT * FROM forma_pgto;
 
@@ -90,10 +89,10 @@ INSERT INTO pedido(
     pedido_descricao,
     frete,
     valor_total)
-    VALUES (1, 1, 1,'Em Processamento', 'pedido realizado via app', 19.79, 3920.69),
-		   (2, 2, 2,'Cancelado', 'pedido realizado via app', '10', ' '),
+    VALUES (2, 1, 1,'Em Processamento', 'pedido realizado via app', 19.79, 3920.69),
+		   (4, 2, 2,'Cancelado', 'pedido realizado via app', '10', ' '),
            (3, 3, 3,'Confirmado', 'pedido realizado via website', 23.50, 323.4),
-           (4, 4, 4,'Em Processamento', 'pedido realizado via telefone', '10', 29.90);
+           (1, 4, 4,'Em Processamento', 'pedido realizado via telefone', '10', 29.90);
            
 SELECT * FROM pedido;
 

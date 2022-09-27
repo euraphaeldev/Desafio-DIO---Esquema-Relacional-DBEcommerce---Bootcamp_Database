@@ -1,4 +1,5 @@
 -- criação do DB para o cenário de ecommerce
+
 CREATE DATABASE ecommerce;
 USE ecommerce;
 
@@ -13,8 +14,18 @@ create table cliente(
     data_nascimento DATE NOT NULL,
     tipo BOOL, 
     num_doc VARCHAR(14) NOT NULL,
+	cliente_rua VARCHAR(50) NOT NULL,
+    cliente_num VARCHAR(10) NOT NULL,
+    cliente_comp VARCHAR(20),
+    cliente_cep CHAR(8) NOT NULL,
+    cliente_cidade VARCHAR(20) NOT NULL,
+    cliente_estado VARCHAR(20) NOT NULL,
+    cliente_pais VARCHAR(20) NOT NULL,
+	cliente_telefone VARCHAR(20),
     CONSTRAINT unique_cpf_cliente UNIQUE (num_doc)
 );
+
+ALTER TABLE cliente AUTO_INCREMENT = 1;
 
 -- criando tabela cartao
 CREATE TABLE cartao(
@@ -47,18 +58,30 @@ CREATE TABLE produto(
     valor FLOAT DEFAULT 0
 );
 
+CREATE TABLE entrega(
+	idEntrega INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    codigo_de_rastreio VARCHAR(10),
+    data_da_entrega DATE,
+    status_da_entrega VARCHAR(50),
+    CONSTRAINT unique_codigo_de_rastreio UNIQUE (codigo_de_rastreio)
+);
+
 -- criando tabela pedido
 CREATE TABLE pedido(
 	idPedido INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     id_pedido_cliente INT,
     id_forma_pgto INT,
+    id_entrega INT,
     pedido_status ENUM('Cancelado', 'Confirmado', 'Em Processamento') DEFAULT ('Em Processamento'),
     pedido_descricao VARCHAR(255),
     frete FLOAT DEFAULT 10 NOT NULL,
     valor_total VARCHAR(50) NOT NULL DEFAULT 0,
     CONSTRAINT fk_forma_pgto FOREIGN KEY (id_forma_pgto) REFERENCES forma_pgto(idForma_pgto),
-    CONSTRAINT fk_pedido_cliente FOREIGN KEY (id_pedido_cliente) REFERENCES cliente(idCliente)
+    CONSTRAINT fk_pedido_cliente FOREIGN KEY (id_pedido_cliente) REFERENCES cliente(idCliente),
+    CONSTRAINT fk_entrega FOREIGN KEY (id_entrega) REFERENCES entrega(idEntrega)
 );
+
+desc pedido;
 
 -- criando tabela estoque
 CREATE TABLE estoque (
@@ -94,6 +117,8 @@ CREATE TABLE fornecedor(
     CONSTRAINT unique_fornecedor UNIQUE (CNPJ_num)
 );
 
+
+
 -- criando a tabela vendedor
 CREATE TABLE vendedor(
 	idVendedor INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -121,6 +146,8 @@ CREATE TABLE vendedor_produto(
     CONSTRAINT fk_idVP_produto FOREIGN KEY (idVP_produto) REFERENCES produto(idProduto)
 );
 
+desc vendedor_produto;
+
 CREATE TABLE pedido_produto(
 	idPP_produto INT,
     idPP_pedido INT,
@@ -128,4 +155,22 @@ CREATE TABLE pedido_produto(
     PRIMARY KEY (idPP_produto, idPP_pedido),
     constraint fk_idPP_produto FOREIGN KEY (idPP_produto) REFERENCES produto(idProduto),
     constraint fk_idPP_pedido FOREIGN KEY (idPP_pedido) REFERENCES pedido(idPedido)
+);
+
+CREATE TABLE estoque_local(
+	idEL_produto INT,
+    idEL_estoque INT,
+    PRIMARY KEY (idEL_produto, idEL_estoque),
+    CONSTRAINT fk_idEL_produto FOREIGN KEY (idEL_produto) REFERENCES produto(idProduto),
+    CONSTRAINT fk_idEL_estoque FOREIGN KEY (idEL_estoque) REFERENCES estoque(idEstoque)
+    
+);
+
+CREATE TABLE fornecedor_produto(
+	idFP_fornecedor INT,
+    idFP_produto INT,
+	FP_quantidade INT NOT NULL,
+    PRIMARY KEY (idFP_fornecedor, idFP_produto),
+    CONSTRAINT fk_idFP_fornecedor FOREIGN KEY (idFP_fornecedor) REFERENCES fornecedor(idFornecedor),
+    CONSTRAINT fk_idFP_produto FOREIGN KEY (idFP_produto) REFERENCES produto(idProduto)    
 );
